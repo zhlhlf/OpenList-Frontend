@@ -54,8 +54,8 @@ importers:
         specifier: ^5.2.0
         version: 5.2.0
       asciinema-player:
-        specifier: ^3.12.1
-        version: 3.12.1
+        specifier: ^3.13.5
+        version: 3.13.5
       axios:
         specifier: ^1.13.2
         version: 1.13.2
@@ -1546,8 +1546,8 @@ packages:
   artplayer@5.3.0:
     resolution: {integrity: sha512-yExO39MpEg4P+bxgChxx1eJfiUPE4q1QQRLCmqGhlsj+ANuaoEkR8hF93LdI5ZyrAcIbJkuEndxEiUoKobifDw==}
 
-  asciinema-player@3.12.1:
-    resolution: {integrity: sha512-X4tIjZEIsD7Keeu1cJbrsZZCbPSO85w2OiDRGui68JHQPjthIG2jh68TARDrf2CP2l1Lko4mevnBdwwmJfD0iw==}
+  asciinema-player@3.13.5:
+    resolution: {integrity: sha512-mgpJc9g6I+k4Tz5qVUNd0H+GoYlhiUwvlay6vD6IXiuiWOWhBOjxbvqQ1bcI/HPTrOYxhTyxZuzHIXM36Tw60Q==}
 
   asynckit@0.4.0:
     resolution: {integrity: sha512-Oei9OH4tRh0YqU3GxhX79dM/mwVgvbZJaSNaRk+bshkj0S5cfHcgYakreBjrHwatXKbz+IoIdYLxrKim2MjW0Q==}
@@ -4844,7 +4844,7 @@ snapshots:
     dependencies:
       option-validator: 2.0.6
 
-  asciinema-player@3.12.1:
+  asciinema-player@3.13.5:
     dependencies:
       '@babel/runtime': 7.28.4
       solid-js: 1.9.10
