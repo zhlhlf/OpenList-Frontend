@@ -41,10 +41,7 @@ jobs:
       - name: Build Lite Release
         run: |
           chmod +x build.sh
-          ./build.sh --release --compress --lite
-        env:
-          CROWDIN_PROJECT_ID: ${{ secrets.CROWDIN_PROJECT_ID }}
-          CROWDIN_PERSONAL_TOKEN: ${{ secrets.CROWDIN_PERSONAL_TOKEN }}
+          ./build.sh --release --compress --lite --skip-i18n
 
       - name: Upload Release Assets
         run: |
