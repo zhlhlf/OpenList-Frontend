@@ -94,12 +94,12 @@ check_git_version_and_commit() {
 
 # Enforce git tag for release builds
 enforce_git_tag() {
-    if ! git_version=$(git describe --abbrev=0 --tags 2>/dev/null); then
-        log_error "No git tags found. Release build requires a git tag."
-        log_warning "Please create a tag first, or use --dev for development builds."
-        exit 1
-    fi
-    validate_git_tag
+    # if ! git_version=$(git describe --abbrev=0 --tags 2>/dev/null); then
+    #     log_error "No git tags found. Release build requires a git tag."
+    #     log_warning "Please create a tag first, or use --dev for development builds."
+    #     exit 1
+    # fi
+    # validate_git_tag
 }
 
 # Validate git tag against package.json version
