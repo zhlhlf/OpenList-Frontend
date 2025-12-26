@@ -29,18 +29,30 @@ export const GridItem = (props: { obj: StoreObj; index: number }) => {
     useSelectWithMouse()
 
   const [isVisible, setIsVisible] = createSignal(false)
+  const [loaded, setLoaded] = createSignal(false)
+  const [canLoad, setCanLoad] = createSignal(false)
   let ref: HTMLDivElement | undefined
+  let loadTimeout: number | undefined
 
   onMount(() => {
     if (ref) {
       const observer = new IntersectionObserver(
         ([entry]) => {
+          if (entry.isIntersecting) {
+            loadTimeout = setTimeout(() => setCanLoad(true), 500)
+          } else {
+            if (loadTimeout) clearTimeout(loadTimeout)
+            setCanLoad(false)
+          }
           setIsVisible(entry.isIntersecting)
         },
         { rootMargin: "50px" },
       )
       observer.observe(ref)
-      onCleanup(() => observer.disconnect())
+      onCleanup(() => {
+        observer.disconnect()
+        if (loadTimeout) clearTimeout(loadTimeout)
+      })
     }
   })
   return (
@@ -132,7 +144,10 @@ export const GridItem = (props: { obj: StoreObj; index: number }) => {
               }}
             />
           </Show>
-          <Show when={props.obj.thumb && isVisible()} fallback={objIcon}>
+          <Show
+            when={props.obj.thumb && (canLoad() || loaded())}
+            fallback={objIcon}
+          >
             <ImageWithError
               maxH="$full"
               maxW="$full"
@@ -142,6 +157,7 @@ export const GridItem = (props: { obj: StoreObj; index: number }) => {
               fallbackErr={objIcon}
               src={props.obj.thumb}
               loading="lazy"
+              onLoad={() => setLoaded(true)}
             />
           </Show>
         </Center>
