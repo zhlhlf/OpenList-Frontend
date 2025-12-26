@@ -1,7 +1,7 @@
 import { Center, VStack, Icon, Text } from "@hope-ui/solid"
 import { Motion } from "solid-motionone"
 import { useContextMenu } from "solid-contextmenu"
-import { batch, Show } from "solid-js"
+import { batch, Show, createSignal, onMount, onCleanup } from "solid-js"
 import { CenterLoading, LinkWithPush, ImageWithError } from "~/components"
 import { usePath, useRouter, useUtil } from "~/hooks"
 import { checkboxOpen, getMainColor, local, selectIndex } from "~/store"
@@ -27,8 +27,25 @@ export const GridItem = (props: { obj: StoreObj; index: number }) => {
   const { pushHref, to } = useRouter()
   const { openWithDoubleClick, toggleWithClick, restoreSelectionCache } =
     useSelectWithMouse()
+
+  const [isVisible, setIsVisible] = createSignal(false)
+  let ref: HTMLDivElement | undefined
+
+  onMount(() => {
+    if (ref) {
+      const observer = new IntersectionObserver(
+        ([entry]) => {
+          setIsVisible(entry.isIntersecting)
+        },
+        { rootMargin: "50px" },
+      )
+      observer.observe(ref)
+      onCleanup(() => observer.disconnect())
+    }
+  })
   return (
     <Motion.div
+      ref={ref}
       initial={{ opacity: 0, scale: 0.9 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 0.2 }}
@@ -115,7 +132,7 @@ export const GridItem = (props: { obj: StoreObj; index: number }) => {
               }}
             />
           </Show>
-          <Show when={props.obj.thumb} fallback={objIcon}>
+          <Show when={props.obj.thumb && isVisible()} fallback={objIcon}>
             <ImageWithError
               maxH="$full"
               maxW="$full"
