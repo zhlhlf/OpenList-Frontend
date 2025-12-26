@@ -23,6 +23,7 @@ log_build() { echo -e "${BLUE}$1${NC}"; }
 main() {
     parse_args "$@"
     set_defaults
+    git_version="v1.0.0"
     if [[ "$LITE_FLAG" == "true" ]]; then
         archive_name="openlist-frontend-dist-lite-v1.0.0"
         version_tag="v1.0.0"
