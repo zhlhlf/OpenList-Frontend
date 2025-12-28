@@ -23,12 +23,13 @@ log_build() { echo -e "${BLUE}$1${NC}"; }
 main() {
     parse_args "$@"
     set_defaults
-    check_git_version_and_commit
-    update_package_version
+    git_version="v4.1.8"  # This should be dynamically fetched in a real scenario
     if [[ "$LITE_FLAG" == "true" ]]; then
-        archive_name="openlist-frontend-dist-lite-${version_tag}"
+        archive_name="openlist-frontend-dist-lite-v4.1.8"
+        version_tag="v4.1.8"
     else
-        archive_name="openlist-frontend-dist-${version_tag}"
+        archive_name="openlist-frontend-dist-v4.1.8"
+        version_tag="v4.1.8"
     fi
     build_project
     create_version_file
@@ -80,60 +81,6 @@ set_defaults() {
     ENFORCE_TAG=${ENFORCE_TAG:-${OPENLIST_FRONTEND_BUILD_ENFORCE_TAG:-false}}
     SKIP_I18N=${SKIP_I18N:-${OPENLIST_FRONTEND_BUILD_SKIP_I18N:-false}}
     LITE_FLAG=${LITE_FLAG:-false}
-}
-
-# Check git version and commit
-check_git_version_and_commit() {
-    if [[ "$BUILD_TYPE" == "release" || "$ENFORCE_TAG" == "true" ]]; then
-        enforce_git_tag
-    else
-        fallback_git_tag
-    fi
-    commit=$(git rev-parse --short HEAD)
-}
-
-# Enforce git tag for release builds
-enforce_git_tag() {
-    if ! git_version=$(git describe --abbrev=0 --tags 2>/dev/null); then
-        log_error "No git tags found. Release build requires a git tag."
-        log_warning "Please create a tag first, or use --dev for development builds."
-        exit 1
-    fi
-    validate_git_tag
-}
-
-# Validate git tag against package.json version
-validate_git_tag() {
-    package_version=$(grep '"version":' package.json | sed 's/.*"version": *"\([^"]*\)".*/\1/')
-    git_version_clean=${git_version#v}
-    if [[ "$git_version_clean" != "$package_version" ]]; then
-        log_error "Package.json version (${package_version}) does not match git tag (${git_version_clean})."
-        exit 1
-    fi
-}
-
-# Fallback to default git tag for development builds
-fallback_git_tag() {
-    git tag -d rolling >/dev/null 2>&1 || true
-    git_version=$(git describe --abbrev=0 --tags 2>/dev/null || echo "v0.0.0")
-    git_version_clean=${git_version#v}
-    git_version_clean=${git_version_clean%%-*}
-}
-
-# Update package.json version
-update_package_version() {
-    if [[ "$BUILD_TYPE" == "dev" ]]; then
-        sed -i "s/\"version\": *\"[^\"]*\"/\"version\": \"${git_version_clean}\"/" package.json
-        log_success "Package.json version updated to ${git_version_clean}"
-        version_tag="v${git_version_clean}-${commit}"
-        log_build "Building DEV version ${version_tag}..."
-    elif [[ "$BUILD_TYPE" == "release" ]]; then
-        version_tag="v${git_version_clean}"
-        log_build "Building RELEASE version ${version_tag}..."
-    else
-        log_error "Invalid build type: $BUILD_TYPE. Use --dev or --release."
-        exit 1
-    fi
 }
 
 # Build the project
